@@ -84,9 +84,10 @@ class WinterSchool_FineTuning:
         return Korpora.load(corpus_name)
 
     def build_BERT(self):
-        from transformers import BertTokenizer
+        from transformers import BertConfig, BertTokenizer
+        self.bert_tokenizer_path = './krbert/vocab_snu_char16424.txt'
         self.tokenizer = BertTokenizer.from_pretrained(
-            'snunlp/KR-Medium')
+            self.bert_tokenizer_path)
 
     def prepare(self, verbose=False):
         self.build_dataset(verbose)
