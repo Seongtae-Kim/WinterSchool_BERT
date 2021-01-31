@@ -4,12 +4,12 @@ from typing import overload
 
 
 class WinterSchool_FineTuning:
-    def __init__(self, train_ratio=None, batch_size=None, epoch=None):
+    def __init__(self, tokenizer_path, train_ratio=None, batch_size=None, epoch=None):
         self.epoch = epoch
         self.batch = batch_size
         self.train_ratio = train_ratio
         self.set_device()
-        self.build_BERT()
+        self.build_BERT(tokenizer_path)
         self.trained = False
 
     def set_device(self):
@@ -83,9 +83,9 @@ class WinterSchool_FineTuning:
         from Korpora import Korpora
         return Korpora.load(corpus_name)
 
-    def build_BERT(self):
+    def build_BERT(self, tokenizer_path):
         from transformers import BertConfig, BertTokenizer
-        self.bert_tokenizer_path = './vocab_snu_char16424.txt'
+        self.bert_tokenizer_path = tokenizer_path
         self.tokenizer = BertTokenizer.from_pretrained(
             self.bert_tokenizer_path)
 
