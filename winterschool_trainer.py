@@ -159,11 +159,12 @@ class WinterSchool_FineTuning:
         torch.cuda.manual_seed_all(seed_val)
         training_log = []
         desc_training_loss = None
+        self.bert.train()
+        self.bert.to(self.device)
         with tqdm(range(0, self.epoch), leave=False, bar_format="{percentage:2.2f}% {bar} {desc} | {elapsed}>{remaining}") as t:
             for epoch_i in range(0, self.epoch):
                 t.update()
                 total_train_loss = 0
-                self.bert.train()
 
                 for step, batch in enumerate(self.train_dataloader):
                     desc = "epoch: {:,}/{:,} | step: {:,}/{:,}".format(
@@ -202,8 +203,8 @@ class WinterSchool_FineTuning:
 
     def validate(self):
         import torch
-
         self.bert.eval()
+        self.bert.to(self.device)
         total_eval_accuracy = 0
         total_eval_loss = 0
         nb_eval_steps = 0
