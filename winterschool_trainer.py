@@ -84,11 +84,7 @@ class WinterSchool_FineTuning:
         return Korpora.load(corpus_name)
 
     def build_BERT(self):
-        from transformers import BertConfig, BertTokenizer
-        self.bert_model_path = "./krbert/pytorch_model_char16424_ranked.bin"
-        self.bert_config_path = BertConfig.from_json_file(
-            "./krbert/bert_config_char16424.json")
-        self.bert_tokenizer_path = './krbert/vocab_snu_char16424.txt'
+        from transformers import BertTokenizer
         self.tokenizer = BertTokenizer.from_pretrained(
             'snunlp/KR-Medium')
 
