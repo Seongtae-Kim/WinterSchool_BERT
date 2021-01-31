@@ -145,7 +145,7 @@ class Winterschool_Models:
         )
 
         for idx, generated in enumerate(
-                [self.tokenizer.decode(sentence, skip_special_tokens=True) for sentence in outputs]):
+                [self.lists["gpt3-kor-small_based_on_gpt2"]["Tokenizer"].decode(sentence, skip_special_tokens=True) for sentence in outputs]):
             print('{0}: {1}'.format(idx, generated))
 
     def answer_question(self, question, context):
