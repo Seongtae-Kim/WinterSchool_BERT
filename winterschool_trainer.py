@@ -85,12 +85,12 @@ class WinterSchool_FineTuning:
 
     def build_BERT(self):
         from transformers import BertConfig, BertTokenizer
-        self.bert_model_path = "/home/seongtae/SynologyDrive/SIRE/Projects/KR-BERT/KR-BERT/krbert_pytorch/pretrained/pytorch_model_char16424_ranked.bin"
+        self.bert_model_path = "./krbert/pytorch_model_char16424_ranked.bin"
         self.bert_config_path = BertConfig.from_json_file(
-            "/home/seongtae/SynologyDrive/SIRE/Projects/KR-BERT/KR-BERT/krbert_pytorch/pretrained/bert_config_char16424.json")
-        self.bert_tokenizer_path = '/home/seongtae/SynologyDrive/SIRE/Projects/KR-BERT/KR-BERT/krbert_pytorch/pretrained/vocab_snu_char16424.txt'
+            "./krbert/bert_config_char16424.json")
+        self.bert_tokenizer_path = './krbert/vocab_snu_char16424.txt'
         self.tokenizer = BertTokenizer.from_pretrained(
-            self.bert_tokenizer_path, do_lower_case=False)
+            'snunlp/KR-Medium')
 
     def prepare(self, verbose=False):
         self.build_dataset(verbose)
@@ -242,8 +242,9 @@ class Sentiment_Analysis(WinterSchool_FineTuning):
 
     def build(self):
         from transformers import BertForSequenceClassification
-        self.bert = BertForSequenceClassification.from_pretrained(
-            self.bert_model_path, config=self.bert_config_path)
+        # self.bert = BertForSequenceClassification.from_pretrained(
+        #    self.bert_model_path, config=self.bert_config_path)
+        self.bert = BertForSequenceClassification.from_pretrained("KR-Medium")
         print("BERT 준비 완료")
 
     def predict(self, sentence):
