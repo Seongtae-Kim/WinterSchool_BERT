@@ -206,12 +206,11 @@ class WinterSchool_FineTuning:
 
     def validate(self):
         import torch
+        self.bert.to(self.device)
         self.bert.eval()
         total_eval_accuracy = 0
         total_eval_loss = 0
-        self.bert.to(self.device)
         for batch in self.validation_dataloader:
-            self.bert.to(self.device)
             b_input_ids = batch[0]
             b_input_ids.to(self.device)
             b_input_mask = batch[1]
@@ -220,10 +219,11 @@ class WinterSchool_FineTuning:
             b_labels.to(self.device)
 
             with torch.no_grad():
-                (loss, logits) = self.bert(b_input_ids,
-                                           token_type_ids=None,
-                                           attention_mask=b_input_mask,
-                                           labels=b_labels)
+                output = self.bert(b_input_ids,
+                                   token_type_ids=None,
+                                   attention_mask=b_input_mask,
+                                   labels=b_labels)
+            loss = output[0]
             total_eval_loss += loss.item()
             logits = logits.detach().cpu().numpy()
             label_ids = b_labels.to('cpu').numpy()
