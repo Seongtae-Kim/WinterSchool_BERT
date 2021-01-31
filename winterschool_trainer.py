@@ -241,7 +241,9 @@ class Sentiment_Analysis(WinterSchool_FineTuning):
         from transformers import BertForSequenceClassification
         # self.bert = BertForSequenceClassification.from_pretrained(
         #    self.bert_model_path, config=self.bert_config_path)
-        self.bert = BertForSequenceClassification.from_pretrained("KR-Medium")
+        self.bert = BertForSequenceClassification.from_pretrained(
+            "snunlp/KR-Medium")
+
         print("BERT 준비 완료")
 
     def predict(self, sentence):
