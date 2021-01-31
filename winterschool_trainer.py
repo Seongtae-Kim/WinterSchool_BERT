@@ -85,7 +85,7 @@ class WinterSchool_FineTuning:
 
     def build_BERT(self):
         from transformers import BertConfig, BertTokenizer
-        self.bert_tokenizer_path = './krbert/vocab_snu_char16424.txt'
+        self.bert_tokenizer_path = './vocab_snu_char16424.txt'
         self.tokenizer = BertTokenizer.from_pretrained(
             self.bert_tokenizer_path)
 
