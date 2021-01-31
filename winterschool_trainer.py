@@ -207,11 +207,11 @@ class WinterSchool_FineTuning:
     def validate(self):
         import torch
         self.bert.eval()
-        self.bert.to(self.device)
         total_eval_accuracy = 0
         total_eval_loss = 0
-        nb_eval_steps = 0
+        self.bert.to(self.device)
         for batch in self.validation_dataloader:
+            self.bert.to(self.device)
             b_input_ids = batch[0]
             b_input_ids.to(self.device)
             b_input_mask = batch[1]
