@@ -182,12 +182,13 @@ class WinterSchool_FineTuning:
 
                     self.bert.zero_grad()
 
-                    loss, logits = self.bert(b_input_ids,
-                                             token_type_ids=None,
-                                             attention_mask=b_input_mask,
-                                             labels=b_labels)
+                    output = self.bert(b_input_ids,
+                                       token_type_ids=None,
+                                       attention_mask=b_input_mask,
+                                       labels=b_labels)
 
-                    total_train_loss += loss.item()
+                    loss = output[0]
+                    total_train_loss += loss
                     loss.backward()
                     torch.nn.utils.clip_grad_norm_(self.bert.parameters(), 1.0)
                     self.optimizer.step()
