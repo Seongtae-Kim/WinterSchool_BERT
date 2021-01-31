@@ -193,10 +193,12 @@ class WinterSchool_FineTuning:
                     torch.nn.utils.clip_grad_norm_(self.bert.parameters(), 1.0)
                     self.optimizer.step()
                     self.scheduler.step()
-                    avg_train_loss = total_train_loss / \
-                        len(self.train_dataloader)
-                    desc_training_loss = "mean training loss: {0:.2f}".format(
-                        avg_train_loss)
+
+                avg_train_loss = total_train_loss / \
+                    len(self.train_dataloader)
+                desc_training_loss = "mean training loss: {0:.2f}".format(
+                    avg_train_loss)
+
         if verbose:
             for log in training_log:
                 print(log)
