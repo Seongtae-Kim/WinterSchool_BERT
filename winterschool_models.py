@@ -129,10 +129,11 @@ class Winterschool_Models:
             outputs[0], skip_special_tokens=True))
 
     def generate_text(self, text, num):
-        input_ids = self.tokenizer.encode(text, return_tensors='pt')
+        input_ids = self.lists["gpt3-kor-small_based_on_gpt2"]["Tokenizer"].encode(
+            text, return_tensors='pt')
         input_ids = input_ids[:, 1:]  # remove cls token
 
-        outputs = self.model.generate(
+        outputs = self.lists["gpt3-kor-small_based_on_gpt2"]["Model"].generate(
             input_ids,
             min_length=30,
             max_length=50,
