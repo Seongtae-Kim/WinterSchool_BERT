@@ -219,6 +219,7 @@ class WinterSchool_FineTuning:
             b_labels.to(self.device)
 
             with torch.no_grad():
+                self.bert.to(self.device)
                 output = self.bert(b_input_ids,
                                    token_type_ids=None,
                                    attention_mask=b_input_mask,
