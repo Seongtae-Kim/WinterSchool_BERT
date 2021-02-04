@@ -197,7 +197,6 @@ class Winterschool_Models:
         results = {'kykim/bert-kor-base': bert,
                    'kykim/albert-kor-base': albert,
                    'bert_multilingual': bert_multilingual,
-                   "kr-medium": krbert,
                    'xlm': xlm}
 
         for model, tokens in results.items():
