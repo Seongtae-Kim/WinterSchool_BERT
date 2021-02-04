@@ -165,14 +165,13 @@ class WinterSchool_FineTuning:
             for epoch_i in range(0, self.epoch):
                 t.update()
                 total_train_loss = 0
+                train_accs=[]
 
                 for step, batch in enumerate(self.train_dataloader):
                     desc = "epoch: {:,}/{:,} | step: {:,}/{:,}".format(
                         epoch_i+1, len(range(0, self.epoch)), step+1, len(self.train_dataloader))
 
                     if desc_training_loss is not None:
-                        training_log.append(
-                            "{:<50}{}".format(desc, desc_training_loss))
                         t.set_description_str(desc+" | "+desc_training_loss)
                     else:
                         t.set_description_str(desc)
@@ -186,18 +185,26 @@ class WinterSchool_FineTuning:
                                        token_type_ids=None,
                                        attention_mask=b_input_mask,
                                        labels=b_labels)
-
                     loss = output[0]
+                    logits = output[1]
+
                     total_train_loss += loss
                     loss.backward()
                     torch.nn.utils.clip_grad_norm_(self.bert.parameters(), 1.0)
+
+                    logits = logits.detach().cpu().numpy()
+                    label_ids = b_labels.to('cpu').numpy()
+                    acc = self.flat_accuracy(logits, label_ids)
+                    train_accs.append(acc)
                     self.optimizer.step()
                     self.scheduler.step()
-
+                avg_train_acc = sum(train_accs) / len(train_accs)
                 avg_train_loss = total_train_loss / \
                     len(self.train_dataloader)
-                desc_training_loss = "mean training loss: {0:.2f}".format(
-                    avg_train_loss)
+                desc_training_loss = "mean training loss: {:.2f} / average accuracies:{}".format(
+                    avg_train_loss, round(avg_train_acc, 2))
+                training_log.append(
+                            "{:<50}{}".format(desc, desc_training_loss))
 
         if verbose:
             for log in training_log:
@@ -206,17 +213,12 @@ class WinterSchool_FineTuning:
 
     def validate(self):
         import torch
-        self.bert.to(self.device)
         self.bert.eval()
         total_eval_accuracy = 0
         total_eval_loss = 0
         for batch in self.validation_dataloader:
-            b_input_ids = batch[0]
-            b_input_ids.to(self.device)
-            b_input_mask = batch[1]
-            b_input_mask.to(self.device)
-            b_labels = batch[2]
-            b_labels.to(self.device)
+            b_input_ids, b_input_mask, b_labels = map(
+                lambda e: e.to(self.device), batch)
 
             with torch.no_grad():
                 self.bert.to(self.device)
@@ -225,6 +227,8 @@ class WinterSchool_FineTuning:
                                    attention_mask=b_input_mask,
                                    labels=b_labels)
             loss = output[0]
+            logits = output[1]
+
             total_eval_loss += loss.item()
             logits = logits.detach().cpu().numpy()
             label_ids = b_labels.to('cpu').numpy()
@@ -262,8 +266,10 @@ class Sentiment_Analysis(WinterSchool_FineTuning):
         self.encode([sentence])
 
         self.bert.eval()
-
         with torch.no_grad():
-            logit = self.bert(self.input_ids, token_type_ids=None,
+            self.bert.to(self.device)
+            self.input_ids = self.input_ids.to("cuda")
+            self.attention_masks = self.attention_masks.to("cuda")
+            logit = self.bert(self.input_ids,
                               attention_mask=self.attention_masks)
         return "긍정" if np.argmax(logit[0].detach().cpu().numpy()) else "부정"

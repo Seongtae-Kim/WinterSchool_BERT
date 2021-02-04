@@ -194,15 +194,6 @@ class Winterschool_Models:
         xlm = self.decode_mask(self.lists['xlm-roberta-base']["Tokenizer"], predict[0, mask_idx, :].topk(
             top_k).indices.tolist(), top_clean)
 
-        # ========================= KR-BERT =================================
-        input_ids, mask_idx = self.encode_mask(self.lists['KR-Medium']["Tokenizer"], text_sentence,
-                                               mask_token=self.lists['KR-Medium']["Tokenizer"].mask_token,
-                                               mask_token_id=self.lists['KR-Medium']["Tokenizer"].mask_token_id)
-        with torch.no_grad():
-            predict = self.lists['KR-Medium']["Model"](input_ids)[0]
-        krbert = self.decode_mask(self.lists['KR-Medium']["Tokenizer"], predict[0, mask_idx, :].topk(
-            top_k).indices.tolist(), top_clean)
-
         results = {'kykim/bert-kor-base': bert,
                    'kykim/albert-kor-base': albert,
                    'bert_multilingual': bert_multilingual,
